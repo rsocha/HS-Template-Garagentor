@@ -1,0 +1,125 @@
+# -*- coding: iso8859-1 -*-
+## -----------------------------------------------------
+## Torsteuerung   ### v2.1
+##
+## erstellt am: 2015-10-03 06:07
+## -----------------------------------------------------
+## Copyright © 2010, knx-user-forum e.V, All rights reserved.
+##
+## This program is free software; you can redistribute it and/or modify it under the terms
+## of the GNU General Public License as published by the Free Software Foundation; either
+## version 3 of the License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+## without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+## See the GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License along with this program;
+## if not, see <http://www.gnu.de/documents/gpl-3.0.de.html>.
+
+## -- 
+## -- 
+## --  
+
+#5000|"Text"|Remanent(1/0)|Anz.Eingänge|.n.|Anzahl Ausgänge|.n.|.n.
+#5001|Anzahl Eingänge|Ausgänge|Offset|Speicher|Berechnung bei Start
+#5002|Index Eingang|Default Wert|0=numerisch 1=alphanummerisch
+#5003|Speicher|Initwert|Remanent
+#5004|ausgang|Initwert|runden binär (0/1)|typ (1-send/2-sbc)|0=numerisch 1=alphanummerisch
+#5012|abbruch bei bed. (0/1)|bedingung|formel|zeit|pin-ausgang|pin-offset|pin-speicher|pin-neg.ausgang
+
+5000|"r.socha\Torsteuerung_v2.1"|1|8|"E1 Tor Status Offen"|"E2 Tor Status Zu"|"E3 Verzögerung für Warnung (sec)"|"E4 Betriebsstunden Schrittweite (sec)"|"E5 Abwesend"|"E6 Regen"|"E7 Sperre Regen"|"E8 Verzögerung für Warnung offen (sec)"|8|"A1 Tor Status (100%=Zu / 0%=Offen)"|"A2 Tor fährt gerade"|"A3 Warnung Tor offen (sbc)"|"A4 Tor offen (1) / zu (0) / fährt (2)"|"A5 Zeit hh:mm"|"A6 Warnung Tor offen bei Abwesend (sbc)"|"A7 Warnung Tor offen bei Regen (sbc)"|"A8 Warnung Tor offen (sbc)"
+
+#5001|Anzahl Eingänge|Ausgänge|Offset|Speicher|Berechnung bei Start
+5001|8|8|4|11|1   
+
+#5002|Index Eingang|Default Wert|0=numerisch 1=alphanummerisch
+5002|1|0|0   	## Eingang Tor offen
+5002|2|0|0   	## Eingang Tor geschlossen
+5002|3|0|0   	## Verzögerung für Warnung wenn Tor nicht geschlssen
+5002|4|0|0  	## Schrittweite für Betriebsstundenzählen offen od. zu
+5002|5|0|0   	## Abwesend
+5002|6|0|0   	## Regen
+5002|7|0|0   	## Sperre bei Regen
+5002|8|0|0   	## Verzögerung WarnungTor offen
+
+
+#5003|Speicher|Initwert|Remanent
+5003|1|0|1  	## Speicher Tor Status offen
+5003|2|0|1  	## Speicher Tor Status zu
+5003|3|0|1  	## Speicher Tor offen/zu/fährt
+5003|4|0|1  	## Speicher für Schrittweite
+5003|5|0|1  	## Speicher für Zeit in Dezimal
+5003|6|0|0     	## hh, Dezimal
+5003|7|0|0     	## mm, Dezimal
+5003|8|0|0     	## ss, dez
+5003|9|0|0     	## mm, str
+5003|10|0|0     ## ss, str
+5003|11|0|1  	## Speicher für Schrittweite Tor offen
+
+
+
+#5004|Ausgang|Initwert|runden binär (0/1)|typ (1-send/2-sbc)|0=numerisch 1=alphanummerisch
+5004|1|0|0|2|0 		## Tor Status (100%=zu / 0%=offen)
+5004|2|0|0|2|0 		## Tor fährt gerade
+5004|3|0|0|2|0 		## Warnung Tor nicht geschlossen mit Verzögerung
+5004|4|0|0|2|0 		## Tor offen(0)/zu(1)/fährt(2)
+5004|5|""|0|1|1     ## Zeit als hh:mm
+5004|6|0|0|2|0 		## Warnung Tor offen bei Abwesend
+5004|7|0|0|2|0 		## Warnung Tor offen bei Regen
+5004|8|0|0|2|0 		## Warnung Tor offen (Zeitüberschreitung E8)
+
+#################################################
+
+
+
+5012|0|"(EN[1]==1) and (EN[2]==0)"|"0"|""|1|0|1|0
+5012|0|"(EN[1]==0) and (EN[2]==1)"|"EN[2]*100"|""|1|0|1|0
+5012|0|"(EN[1]==0) and (EN[2]==0)"|"50"|""|1|0|1|0
+
+5012|0|"(EN[1]==1) and (EN[2]==0) or (EN[1]==0) and (EN[2]==1) "|"0"|""|2|0|2|0
+5012|0|"(EN[1]==0) and (EN[2]==0)"|"1"|""|2|0|2|0
+
+##Warnung
+5012|0|"(EN[1]==1) and (EN[2]==0) or (EN[1]==0) and (EN[2]==1) "|"0"|""|3|0|0|0
+5012|0|"OC[1] and (EN[1]==0) and (EN[2]==0) and (EN[3]>0)"|"1"|""|3|0|0|0
+5012|0|"(EN[1]==0) and (EN[2]==0) and (EN[3]>0)"|"0"|"EN[3]"|0|1|0|0
+
+##Regen
+5012|0|"(EN[1]==1) and (EN[2]==0) or (EN[1]==0) and (EN[2]==1) "|"0"|""|7|0|0|0
+5012|0|"OC[3] and (EN[6]==1) and (EN[7]==0) and (EN[2]==0) and (EN[3]>0)"|"1"|""|7|0|0|0
+5012|0|"(EC[6] and EN[6]==1) and (EN[7]==0) and (EN[1]==1) and (EN[2]==0) and (EN[3]>0)"|"0"|"EN[3]"|0|3|0|0
+
+
+##Status Tor offen / zu / Fährt
+5012|0|"(EN[1]==1) and (EN[2]==0)"|"1"|""|4|0|3|0
+5012|0|"(EN[1]==0) and (EN[2]==1)"|"0"|""|4|0|3|0
+5012|0|"(EN[1]==0) and (EN[2]==0)"|"2"|""|4|0|3|0
+
+### Betriebsstunden Zähler
+5012|0|"OC[2] and EN[1] or EN[2]"|"SN[4]+(float(EN[4])/3600)"|""|0|0|4|0
+5012|0|"(OC[2] or EC[4] or EI) and EN[4]"|"1"|"EN[4]"|0|2|0|0
+5012|0|"(EN[1]==0) and (EN[2]==0)"|"0"|""|0|0|4|0
+5012|0|"SC[4] or EI"|"SN[4]"|""|0|0|5|0
+
+### Dezimalzeit in hh mm ss zerlegen
+5012|0|""|"int(SN[5])"                      |""|0|0|6|0
+5012|0|""|"int(60*(SN[5]-SN[6]))"           |""|0|0|7|0
+5012|0|""|"int(60*(60*(SN[5]-SN[6])-SN[7]))"|""|0|0|8|0
+5012|0|""|"'0'+str(SN[7])"                  |""|0|0|9|0
+5012|0|""|"'0'+str(SN[8])"                  |""|0|0|10|0
+
+# hh:mm:ss zusammensetzen, ggf. bei mm und ss Vornullen ergänzen
+5012|0|""|"str(SN[6]) + ':' + (SN[9][len(SN[9])-2:len(SN[9])]) + ' Std'"|"0"|5|0|0|0
+#5012|0|""|"AN[5]      + ':' + (SN[10][len(SN[10])-2:len(SN[10])])"|"0"|6|0|0|0
+
+##Warnung bei Abwesend
+5012|0|"(EN[5]==0)"|"0"|""|6|0|0|0
+5012|0|"(EN[1]==0) and (EN[2]==1) and (EN[5]==1) or (EN[5]==0)"|"0"|""|6|0|0|0
+5012|0|"(EN[1]==0) and (EN[2]==0) and (EN[5]==1) or (EN[1]==1) and (EN[2]==0) and (EN[5]==1)"|"1"|""|6|0|0|0
+
+##Warnung Tor offen
+5012|0|"(EN[1]==1) and (EN[2]==0) or (EN[1]==0) and (EN[2]==1) "|"0"|""|8|0|0|0
+5012|0|"OC[4] and (EN[1]==1) and (EN[8]>0)"|"1"|""|8|0|0|0
+5012|0|"(EN[1]==0) and (EN[2]==0) and (EN[8]>0)"|"0"|"EN[8]"|0|4|0|0
+
