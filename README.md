@@ -15,48 +15,34 @@ Version für hell und dunkel.
 
 Version 2.1
 
-Eingang 1:
-KO für Tor ist offen (1Bit).
+## Eingänge
 
-Eingang 2:
-KO für Tor ist geschlossen (1Bit)
 
-Eingang 3:
-Wert in sec eingeben für Verzögerung bis an A3 die Warnausgabe (1Bit) kommt.
+| Nr. | Name | Init | Beschreibung |
+|-----:|---------------| ---- | --- |
+| 1 | E1 Tor Status Offen |  | KO für Tor ist offen (1Bit). |
+| 2 | E2 Tor Status Zu |  | KO für Tor ist geschlossen (1Bit) |
+| 3 | E3 Verzögerung für Warnung (sec) |  | Wert in sec eingeben für Verzögerung bis an A3 die Warnausgabe (1Bit) kommt. |
+| 4 | E4 Betriebsstunden Schrittweite (sec) |  | Wert in sec eingeben für Schrittweite des Betriebsstundenzählers, Ausgabe an A5. Ausgabe in hh:mm. Reset bei öffnen oder schliessen. |
+| 5 | E5 Abwesend |  | Wert in sec eingeben für Schrittweite des Betriebsstundenzählers, Ausgabe an A5. Ausgabe in hh:mm. Rest bei öffnen oder schliessen. |
+| 6 | E6 Regen |  | Bei 1 und Tor Offen wird an A7 eine 1 gesendet (1Bit). |
+| 7 | E7 Sperre Regen |  | Bei 1 wir A7 gesperrt (keine Ausgabe) |
 
-Eingang 4:
-Wert in sec eingeben für Schrittweite des Betriebsstundenzählers, Ausgabe an A5. Ausgabe in hh:mm. Rest bei öffnen oder schliessen.
 
-Ausgang 1:
-Hier wird 0% bei offen, 50% bei fährt oder halboffen und 100% bei geschlossen ausgegeben.
+## Ausgänge
 
-Ausgang 2:
-Hier wird eine 1 für Tor fährt und eine 0 für Tor fährt nicht ausgegeben.
 
-Ausgang 3:
-Hier wird nach Ablauf des Timers auf A3 eine 1 für Warnung ausgegeben (sbc).
+| Nr. | Name | Init | Sbc |Beschreibung |
+|-----:|---------------| ---- | --- | -- |
+| 1 | A1 Tor Status (100%=Zu / 0%=Offen) |  | Sbc | Hier wird 0%, 50% oder 100% ausgegeben, je nach Torstatus. (50% = weder offen noch zu oder fährt) |
 
-Ausgang 4:
-Hier wird eine 1 bei offen, eine 2 bei fährt und eine 0 bei geschlossen ausgegeben.
 
-Ausgang 5:
-Hier wird die Zeit in hh:mm seit geöffent oder geschlossen ausgegeben..
 
-Eingänge
-Eingang	Init	Beschreibung
-Eingang 1	0	Hier wird das Kommunikationsobjekt zugeordnet für Tor ist offen.
-Eingang 2	0	Hier wird das Kommunikationsobjekt zugeordnet für Tor ist geschlossen.
-Eingang 3	0	Hier wir die Zeit für den Timer eingestellt falls Tor nicht geschlossen wird.
-Eingang 4	0	Hier wir die Schrittweite für den Betriebsstundenzählers eingestellt.
-Ausgänge
-Ausgang	Init	Beschreibung
-Ausgang 1	0	Hier wird 0%, 50% oder 100% ausgegeben, je nach Torstatus.
-Ausgang 2	0	Hier wird eine 1 für Tor fährt und eine 0 für Tor fährt nicht ausgegeben.
-Ausgang 3	0	Hier wird eine 1 bei Warnung ausgegeben (sbc).
-Ausgang 4	0	Hier wird eine 1 bei offen, eine 2 bei fährt und eine 0 bei geschlossen ausgegeben.
-Ausgang 5	0	Hier wird die Zeit in hh:mm seit geöffent oder geschlossen ausgegeben.
-Sonstiges
 Neuberechnung beim Start: Ja
+
 Baustein ist Remanent: Ja
+
 Interne Bezeichnung: "15014"
-Der Baustein wird im "Experten" in socha.at einsortiert.
+
+Der Baustein wird im "Experten" in r.socha einsortiert.
+
