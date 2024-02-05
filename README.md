@@ -1,5 +1,7 @@
 # HS-Template-Garagentor
 
+Spenden sind gerne [hier](https://www.paypal.com/paypalme/reinhardsocha) willkommen
+
 ## Template 40-110.hst
 
 Version: 6.4.10082022
